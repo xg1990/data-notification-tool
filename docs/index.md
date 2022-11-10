@@ -1,4 +1,4 @@
-# dnt
+# data-notification-tool
 
 Add a short description here!
 

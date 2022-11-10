@@ -1,5 +1,5 @@
 """
-    Dummy conftest.py for dnt.
+    Dummy conftest.py for data-notification-tool.
 
     If you don't know what this is for, just leave it empty.
     Read more about conftest.py under:

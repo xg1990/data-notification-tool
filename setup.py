@@ -1,5 +1,5 @@
 """
-    Setup file for dnt.
+    Setup file for data-notification-tool.
     Use setup.cfg to configure your project.
 
     This file was generated with PyScaffold 4.3.1.

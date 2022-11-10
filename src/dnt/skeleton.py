@@ -76,7 +76,7 @@ def parse_args(args):
     parser.add_argument(
         "--version",
         action="version",
-        version="dnt {ver}".format(ver=__version__),
+        version="data-notification-tool {ver}".format(ver=__version__),
     )
     parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
     parser.add_argument(
