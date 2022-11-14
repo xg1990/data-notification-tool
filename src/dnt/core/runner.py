@@ -20,6 +20,7 @@ class Runner:
                 raise ValueError(f"The service `{service_name}` is not found")
             _data_service: DataServiceBase = self.config.services[service_name]  # type: ignore
             _result: Messages = _data_service.get_messages(
+                subject=job_name,
                 **dict_drop_key(_msg_config, "service")
             )
             results.append(_result)

@@ -17,6 +17,8 @@ class SQLSource(DataServiceBase):
         super().__init__(name)
         self.connection = create_engine(**kwargs)
 
-    def get_messages(self, query: str) -> Messages:
+    def get_messages(self, query: str, subject=None) -> Messages:
+        if subject is None:
+            subject = self.name
         df: pd.DataFrame = pd.read_sql_query(query, con=self.connection)
-        return Messages(subject=self.name, messages=[_row2str(v) for v in df.values])
+        return Messages(subject=subject, messages=[_row2str(v) for v in df.values])
