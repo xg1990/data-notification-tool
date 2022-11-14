@@ -1,5 +1,6 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import List
 
 from dnt.core.messages import Messages
@@ -22,6 +23,13 @@ class SMTPService(MessageServiceBase):
         msg["From"] = self.username
         msg["To"] = ", ".join(receivers)
         msg["Subject"] = "|".join([msg.subject for msg in msg_list])
+        body: str = ""
+        for _msg in msg_list:
+            body += f"\n\n# {_msg.subject}\n"
+            for _msg in _msg.messages:
+                body += f"- {_msg}\n"
+
+        msg.attach(MIMEText(body, "plain"))
 
         server = smtplib.SMTP(self.host, self.port)
         server.ehlo()
