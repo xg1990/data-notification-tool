@@ -1,10 +1,11 @@
 services:
   test_data:
     class_name: services.dummy_services.DummyService
-    name: test_data
   test_action:
     class_name: ConsoleDummyService
-    name: test_action
+  sqlite_in_memory:
+    class_name: SQLSource
+    url: 'sqlite:///:memory:'
 
 message_groups:
   notify_admin:
@@ -17,6 +18,13 @@ jobs:
     actions:
       - group: notify_admin
       - service: test_action
+  test_sql_alert:
+    get_messages:
+      - service: sqlite_in_memory
+        query: |
+          SELECT 'test message from sqlite_in_memory'
+    actions:
+      - group: notify_admin
 on_failure:
   - group: admin
 custom_modules:

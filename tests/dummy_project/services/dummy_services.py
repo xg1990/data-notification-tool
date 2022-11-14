@@ -4,8 +4,7 @@ from dnt.core.service import Messages, ServiceBase
 
 class DummyService(ServiceBase):
     def __init__(self, name: str) -> None:
-        super().__init__()
-        self.name = name
+        super().__init__(name)
 
     def _validate_exec_kwargs(self, kwargs) -> None:
         pass

@@ -6,7 +6,7 @@ from dnt.core.service import DataServiceBase, MessageServiceBase
 
 class ConsoleDummyService(DataServiceBase, MessageServiceBase):
     def __init__(self, name: str) -> None:
-        super().__init__()
+        super().__init__(name)
         self.name = name
 
     def _validate_exec_kwargs(self, kwargs):

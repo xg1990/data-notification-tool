@@ -20,7 +20,7 @@ class Config(object):
                 sys.path.append(_path)
 
         for service_name, service_config in self._config["services"].items():
-            self.services[service_name] = build_service(service_config)
+            self.services[service_name] = build_service(service_config, service_name)
 
     def get_services_from_group(self, group_name: str, **kwargs) -> List[Tuple[ServiceBase, Dict]]:
         group: List[Any] = self._config["message_groups"][group_name]
