@@ -22,6 +22,7 @@ class Runner:
             _result: Messages = _data_service.get_messages(
                 **dict_drop_key(_msg_config, "service")
             )
+            results.append(_result)
         for action_item in job_config["actions"]:
             if "group" in action_item:
                 # executing an action group

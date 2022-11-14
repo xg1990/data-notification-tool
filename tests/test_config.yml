@@ -22,7 +22,7 @@ jobs:
     get_messages:
       - service: sqlite_in_memory
         query: |
-          SELECT 'test message from sqlite_in_memory'
+          SELECT 'test message from ${SPECIAL_ENVVAR}'
     actions:
       - group: notify_admin
 on_failure:

@@ -1,15 +1,15 @@
-from ast import Str
-from typing import Any, Dict, List, Tuple
 import sys
-import yaml
+from typing import Any, Dict, List, Tuple
 
-from dnt.core.service import build_service, ServiceBase
+from envyaml import EnvYAML
+
+from dnt.core.service import ServiceBase, build_service
 from dnt.core.utils import dict_drop_key
+
 
 class Config(object):
     def __init__(self, filename: str) -> None:
-        with open(filename) as fp:
-            self._config = yaml.safe_load(fp)
+        self._config = EnvYAML(filename, strict=False)
         self.jobs: Dict[str, Dict] = self._config["jobs"]
         self.services: Dict[str, ServiceBase] = {}
         self._set_up_services()
@@ -22,10 +22,12 @@ class Config(object):
         for service_name, service_config in self._config["services"].items():
             self.services[service_name] = build_service(service_config, service_name)
 
-    def get_services_from_group(self, group_name: str, **kwargs) -> List[Tuple[ServiceBase, Dict]]:
+    def get_services_from_group(
+        self, group_name: str, **kwargs
+    ) -> List[Tuple[ServiceBase, Dict]]:
         group: List[Any] = self._config["message_groups"][group_name]
         return [
-            (self.services[item["service"]], dict_drop_key(item, 'service'))
+            (self.services[item["service"]], dict_drop_key(item, "service"))
             for item in group
         ]
 
