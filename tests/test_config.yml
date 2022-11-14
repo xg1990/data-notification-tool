@@ -1,18 +1,23 @@
-connected_services:
-  test_sqlite:
-    class_name: SQLSource
-    config:
+services:
+  test_data:
+    class_name: services.dummy_services.DummyService
+    name: test_data
   test_action:
-    class_name: ConsoleAction
-    config:
-notification_groups:
-  admin:
+    class_name: services.dummy_services.DummyService
+    name: test_action
+
+action_groups:
+  notify_admin:
     - service: test_action
-alerts:
-  - conditions:
-      - service: test_sqlite
-        query_file: ./
-    notify:
-      - group: admin
+
+jobs:
+  test_alert:
+    conditions:
+      - service: test_data
+    actions:
+      - group: notify_admin
+      - service: test_action
 on_failure:
   - group: admin
+custom_modules:
+  - ./tests/dummy_project
