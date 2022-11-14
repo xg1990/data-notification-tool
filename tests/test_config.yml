@@ -3,7 +3,7 @@ services:
     class_name: services.dummy_services.DummyService
     name: test_data
   test_action:
-    class_name: services.dummy_services.DummyService
+    class_name: ConsoleDummyService
     name: test_action
 
 action_groups:

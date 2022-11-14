@@ -29,7 +29,7 @@ def setup_logging(loglevel) -> None:
 
 
 @click.group(invoke_without_command=True)
-@click.option("-c", "--config", type=click.Path(exists=True))
+@click.option("-c", "--config", required=True, type=click.Path(exists=True))
 @click.pass_context
 def main(ctx, config) -> None:
     ctx.ensure_object(dict)

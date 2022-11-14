@@ -1,9 +1,7 @@
-import os
-from typing import List, NoReturn, Optional, TypeVar
+from typing import List, Optional
 
 from dnt.core.config import Config
-from dnt.core.service import (DataServiceBase, ExecutionResult, Messages,
-                              MessageServiceBase, ServiceBase)
+from dnt.core.service import DataServiceBase, Messages, MessageServiceBase
 from dnt.core.utils import dict_drop_key
 
 
