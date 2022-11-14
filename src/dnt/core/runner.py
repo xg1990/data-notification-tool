@@ -38,6 +38,10 @@ class Runner:
                     results, **dict_drop_key(action_item, "service")
                 )
 
-    def run_all(self):
-        for job_name in self.config.jobs:
-            self.run_single_job(job_name)
+    def run_all(self, jobs: List):
+        if jobs == []:
+            for job_name in self.config.jobs:
+                self.run_single_job(job_name)
+        else:            
+            for job_name in jobs:
+                self.run_single_job(job_name)

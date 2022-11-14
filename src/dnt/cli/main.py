@@ -52,10 +52,11 @@ def validate(ctx) -> None:
 
 @main.command()
 @click.pass_context
-def run(ctx) -> None:
+@click.argument('jobs', nargs=-1)
+def run(ctx, jobs) -> None:
     config: Config = ctx.obj['config']
     runner: Runner = Runner(config)
-    runner.run_all()
+    runner.run_all(list(jobs))
 
 
 if __name__ == "__main__":
