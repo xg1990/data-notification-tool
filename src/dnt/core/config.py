@@ -23,12 +23,12 @@ class Config(object):
             self.services[service_name] = build_service(service_config)
 
     def get_services_from_group(self, group_name: str, **kwargs) -> List[Tuple[ServiceBase, Dict]]:
-        group: List[Any] = self._config["action_groups"][group_name]
+        group: List[Any] = self._config["message_groups"][group_name]
         return [
             (self.services[item["service"]], dict_drop_key(item, 'service'))
             for item in group
         ]
 
     def validate(self) -> bool:
-        assert "action_groups" in self._config
+        assert "message_groups" in self._config
         return True

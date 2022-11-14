@@ -6,13 +6,13 @@ services:
     class_name: ConsoleDummyService
     name: test_action
 
-action_groups:
+message_groups:
   notify_admin:
     - service: test_action
 
 jobs:
   test_alert:
-    conditions:
+    get_messages:
       - service: test_data
     actions:
       - group: notify_admin

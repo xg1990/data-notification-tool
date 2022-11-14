@@ -14,13 +14,13 @@ class Runner:
             raise ValueError(f"The job `{job_name}` is not found")
         job_config = self.config.jobs[job_name]
         results: List[Messages] = []
-        for condition in job_config["conditions"]:
-            service_name = condition["service"]
+        for _msg_config in job_config["get_messages"]:
+            service_name = _msg_config["service"]
             if service_name not in self.config.services:
                 raise ValueError(f"The service `{service_name}` is not found")
             _data_service: DataServiceBase = self.config.services[service_name]  # type: ignore
             _result: Messages = _data_service.get_messages(
-                **dict_drop_key(condition, "service")
+                **dict_drop_key(_msg_config, "service")
             )
         for action_item in job_config["actions"]:
             if "group" in action_item:
