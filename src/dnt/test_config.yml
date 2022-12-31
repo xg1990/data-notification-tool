@@ -1,0 +1,60 @@
+# Define the sources to get message data from
+sources:
+  postgres:
+    class_name: SQLSource
+    url: postgresql+psycopg2://test_user:123456@localhost/test
+
+# Define the destinations to receive the messages
+destinations:
+  console:
+    class_name: ClsService
+
+# Define combination of destinations as messages groups
+message_groups:
+  dummy_debug_group:
+    - dest: console
+      level: DEBUG
+      # formatter: formatter.TimeStringFormatter
+
+  dummy_error_group:
+    - dest: console
+      level: ERROR
+      # filterer: 
+      #   - filterer.Aff
+      #   - filterer.Bff
+
+# Define notification jobs    
+jobs:
+  system_status_alert:
+    get_messages:
+      - service: postgres
+        query: |
+          SELECT 
+            *,
+            CASE
+                WHEN details = 'SUCCESS'
+                THEN 'INFO'
+                ELSE 'ERROR'
+            END AS level
+          FROM report.system_status
+    send_messages:
+      - dummy_debug_group
+      - dummy_error_group
+
+  test_single_dest:
+    get_messages:
+      - service: postgres
+        query: |
+          SELECT 
+            *,
+            CASE
+                WHEN details = 'SUCCESS'
+                THEN 'INFO'
+                ELSE 'ERROR'
+            END AS level
+          FROM report.system_status
+    send_messages:
+      - console
+
+# custom_modules:
+#   - ../fmt
