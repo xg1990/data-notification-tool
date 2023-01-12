@@ -61,15 +61,10 @@ def get_components(comp_name: str, config_dict: Dict) -> List[str]:
     """
     Get a deduplicated list of specific components from the config.
     """
-    return list(
-        set(
-            [
-                f for sub_ls 
-                in get_all_key_values(comp_name, config_dict) 
-                for f in sub_ls
-            ]
-        )
-    )
-
-
-
+    res_ls = []
+    for i in get_all_key_values(comp_name, config_dict):
+        if isinstance(i, list):
+            res_ls.extend(i)
+        else:
+            res_ls.append(i)
+    return list(set(res_ls))

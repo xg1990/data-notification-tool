@@ -1,31 +1,61 @@
-services:
-  test_data:
-    class_name: services.dummy_services.DummyService
-  test_action:
-    class_name: ConsoleDummyService
-  sqlite_in_memory:
+# Define the sources to get message data from
+sources:
+  postgres:
     class_name: SQLSource
-    url: 'sqlite:///:memory:'
+    url: postgresql+psycopg2://test_user:123456@localhost/test
 
+# Define the destinations to receive the messages
+destinations:
+  console:
+    class_name: ClsService
+
+# Define combination of destinations as messages groups
 message_groups:
-  notify_admin:
-    - service: test_action
+  dummy_debug_group:
+    - dest: console
+      level: DEBUG
+      formatter: new_formatter.TimeStringFormatter # file name should not conflict with python built-in libraries
 
+  dummy_error_group:
+    - dest: console
+      level: ERROR
+      # filterer: 
+      #   - filterer.Aff
+      #   - filterer.Bff
+
+# Define notification jobs    
 jobs:
-  test_alert:
+  system_status_alert:
     get_messages:
-      - service: test_data
-    actions:
-      - group: notify_admin
-      - service: test_action
-  test_sql_alert:
-    get_messages:
-      - service: sqlite_in_memory
+      - service: postgres
         query: |
-          SELECT 'test message from ${SPECIAL_ENVVAR}'
-    actions:
-      - group: notify_admin
-on_failure:
-  - group: admin
+          SELECT 
+            *,
+            CASE
+                WHEN details = 'SUCCESS'
+                THEN 'INFO'
+                ELSE 'ERROR'
+            END AS level
+          FROM report.system_status
+    send_messages:
+      - dummy_debug_group
+      - dummy_error_group
+
+  test_single_dest:
+    get_messages:
+      - service: postgres
+        query: |
+          SELECT 
+            *,
+            CASE
+                WHEN details = 'SUCCESS'
+                THEN 'INFO'
+                ELSE 'ERROR'
+            END AS level
+          FROM report.system_status
+    send_messages:
+      - console
+
 custom_modules:
-  - ./tests/dummy_project
+  # - F:\datamining\data-notification-tool\src\modules\
+  - ./tests/another_dummy_project/modules

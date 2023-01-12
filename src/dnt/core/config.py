@@ -12,12 +12,17 @@ import pydoc
 
 
 def build_service(service_config: Dict, service_name: str, service_type: str):
-    class_name = service_config["class_name"]
-    
+    class_name = service_config.get("class_name", service_name)
+    print(class_name)
+
     if service_type == "source":
         base_cls = BaseSource 
     elif service_type == "destination":
         base_cls = BaseDestination
+    elif service_type == "formatter":
+        base_cls = BaseFormatter
+    elif service_type == "filterer":
+        base_cls == BaseFilterer
     else:
         raise ValueError(f"Unknown service type: {service_type}")
 
@@ -27,7 +32,10 @@ def build_service(service_config: Dict, service_name: str, service_type: str):
         if _cls is None:
             raise ValueError(f"The {service_type} Class `{class_name}` is not found")
 
-    return _cls(name=service_name, **dict_drop_key(service_config, "class_name"))
+    if service_type in ("source", "destination"):
+        return _cls(name=service_name, **dict_drop_key(service_config, "class_name"))
+    else:
+        return _cls()
 
 class Config:
     def __init__(self, filename: str) -> None:
@@ -53,9 +61,18 @@ class Config:
             self.destinations[dest_name] = build_service(dest_config, dest_name, service_type="destination")
 
         # Load filterers & formatters
-        # raw_cfg = self._config.export()
-        # fmts = get_components("formatter", raw_cfg)
-        # flts = get_components("filterer", raw_cfg)
+        raw_cfg = self._config.export()
+        fmt_ls = get_components("formatter", raw_cfg)
+        flt_ls = get_components("filterer", raw_cfg)
+        for fmt in fmt_ls:
+            self.formatters[fmt] = build_service({}, fmt, "formatter")
+
+        print(fmt_ls)
+        print(flt_ls)
+        print(pydoc.locate('formatter.TimeStringFormatter'))
+        print(pydoc.locate('TimeStringFormatter'))
+
+
 
     def get_services_from_group(
         self, 

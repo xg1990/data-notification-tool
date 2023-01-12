@@ -14,7 +14,7 @@ message_groups:
   dummy_debug_group:
     - dest: console
       level: DEBUG
-      # formatter: formatter.TimeStringFormatter
+      formatter: new_formatter.TimeStringFormatter # file name should not conflict with python built-in libraries
 
   dummy_error_group:
     - dest: console
@@ -56,5 +56,7 @@ jobs:
     send_messages:
       - console
 
-# custom_modules:
-#   - ../fmt
+custom_modules:
+  - F:\datamining\data-notification-tool\src\modules\
+  #- ../modules/
+
