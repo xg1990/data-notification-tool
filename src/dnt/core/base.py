@@ -6,14 +6,26 @@ from dnt.core.messages import Message
 
 
 class BaseSource(ABC):
-    def __init__(self, name) -> None:
+    """
+    A base class of the source.
+    """
+    def __init__(self, name: str) -> None:
+        """
+        Initialize the source with a name
+        """
         self.name = name
 
     @abstractmethod
     def get_messages(self, **kwargs) -> List[Message]:
+        """
+        Extract messages from the source and wrap into a list of Message objects.
+        """
         raise NotImplementedError()
 
 class BaseDestination(ABC):
+    """
+    A base class of the destination.
+    """
     def __init__(self, name, **kwargs) -> None:
         self.name = name
         self.level = kwargs.get("level", "NOTSET")
@@ -46,7 +58,7 @@ class BaseDestination(ABC):
         """
         Render the messages in a specific format, if no formatter assigned, will pass it to Destination for formatting.
         """
-        formatter = StringFormatter if self.formatter is None else self.formatter
+        formatter = BaseFormatter if self.formatter is None else self.formatter
         res_ls = [formatter.format(msg) if isinstance(msg, Message) else msg for msg in msg_ls]
 
         return res_ls
@@ -67,13 +79,7 @@ class BaseDestination(ABC):
         self.send_messages(res_ls, subject, **kwargs)
 
 class BaseFormatter(ABC):
-    @abstractmethod
     def format(self, msg: Message):
-        raise NotImplementedError()
-
-class StringFormatter(BaseFormatter):
-    @staticmethod
-    def format(msg):
         return str(msg.message)
 
 class BaseFilterer(ABC):

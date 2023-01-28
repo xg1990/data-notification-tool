@@ -62,8 +62,8 @@ class Config:
 
         # Load filterers & formatters
         raw_cfg = self._config.export()
-        fmt_ls = get_components("formatter", raw_cfg)
-        flt_ls = get_components("filterer", raw_cfg)
+        fmt_ls = get_components(raw_cfg, "formatter")
+        flt_ls = get_components(raw_cfg, "filterer")
         for fmt in fmt_ls:
             self.formatters[fmt] = build_service({}, fmt, "formatter")
 
