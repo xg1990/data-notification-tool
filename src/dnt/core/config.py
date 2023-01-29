@@ -11,19 +11,19 @@ from dnt.core.utils import dict_drop_key, get_components
 import pydoc
 
 
+SERVICE_TYPE_DIC = {
+    "source": BaseSource,
+    "destination": BaseDestination,
+    "formatter": BaseFormatter,
+    "filterer": BaseFilterer,
+}
+
 def build_service(service_config: Dict, service_name: str, service_type: str):
     class_name = service_config.get("class_name", service_name)
-    print(class_name)
 
-    if service_type == "source":
-        base_cls = BaseSource 
-    elif service_type == "destination":
-        base_cls = BaseDestination
-    elif service_type == "formatter":
-        base_cls = BaseFormatter
-    elif service_type == "filterer":
-        base_cls == BaseFilterer
-    else:
+    try:
+        base_cls = SERVICE_TYPE_DIC[service_type]
+    except KeyError:
         raise ValueError(f"Unknown service type: {service_type}")
 
     _cls: Type[base_cls] = pydoc.locate(class_name)
@@ -49,11 +49,12 @@ class Config:
         self.jobs: Dict[str, Dict] = self._config["jobs"]
         self._set_up_services()
 
-    def _set_up_services(self):
+    def _set_up_services(self) -> None:
         if "custom_modules" in self._config:
             for _path in self._config["custom_modules"]:
                 sys.path.append(_path)    
 
+        # Load sources & destinations
         for source_name, source_config in self._config["sources"].items():
             self.sources[source_name] = build_service(source_config, source_name, service_type="source")
 
@@ -63,16 +64,13 @@ class Config:
         # Load filterers & formatters
         raw_cfg = self._config.export()
         fmt_ls = get_components(raw_cfg, "formatter")
-        flt_ls = get_components(raw_cfg, "filterer")
+        
         for fmt in fmt_ls:
             self.formatters[fmt] = build_service({}, fmt, "formatter")
 
-        print(fmt_ls)
-        print(flt_ls)
-        print(pydoc.locate('formatter.TimeStringFormatter'))
-        print(pydoc.locate('TimeStringFormatter'))
-
-
+        flt_ls = get_components(raw_cfg, "filterer")
+        for flt in flt_ls:
+            self.filterers[flt] = build_service({}, flt, "filterer")
 
     def get_services_from_group(
         self, 

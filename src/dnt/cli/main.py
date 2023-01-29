@@ -17,7 +17,8 @@ _logger: logging.Logger = logging.getLogger(__name__)
 
 
 def setup_logging(loglevel) -> None:
-    """Setup basic logging
+    """
+    Setup basic logging.
 
     Args:
       loglevel (int): minimum loglevel for emitting messages
