@@ -44,7 +44,7 @@ class BaseDestination(ABC):
             for msg in msg_ls:
                 if isinstance(msg, Message):
                     keep_flag_ls.append(
-                        np.cumprod([f.filter(msg) for f in filterer_ls])
+                        np.prod([f.filter(msg) for f in filterer_ls])
                     )
                 else:
                     keep_flag_ls.append(1)
@@ -58,7 +58,7 @@ class BaseDestination(ABC):
         """
         Render the messages in a specific format, if no formatter assigned, will pass it to Destination for formatting.
         """
-        formatter = BaseFormatter if self.formatter is None else self.formatter
+        formatter = BaseFormatter() if self.formatter is None else self.formatter()
         res_ls = [formatter.format(msg) if isinstance(msg, Message) else msg for msg in msg_ls]
 
         return res_ls

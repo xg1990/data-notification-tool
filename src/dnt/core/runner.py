@@ -34,7 +34,7 @@ class Runner:
             if msg_grp_nm in self.config.message_groups:
                 # send to a group
                 msg_grp_cfg = self.config.message_groups[msg_grp_nm]
-                msg_grp = MsgGrp(msg_grp_nm, msg_grp_cfg)
+                msg_grp = MsgGrp(msg_grp_nm, msg_grp_cfg, self.config.formatters, self.config.filterers)
                 delivery: List = msg_grp.deliver_msg(results, subject)
                 
                 for (dest_name, msg) in delivery:

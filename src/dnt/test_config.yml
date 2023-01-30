@@ -14,14 +14,15 @@ message_groups:
   dummy_debug_group:
     - dest: console
       level: DEBUG
-      formatter: new_formatter.TimeStringFormatter # file name should not conflict with python built-in libraries
+      formatter: new_formatter.HumanReadableFormatter
 
   dummy_error_group:
     - dest: console
       level: ERROR
-      # filterer: 
-      #   - filterer.Aff
-      #   - filterer.Bff
+      formatter: new_formatter.TimeStringFormatter # file name should not conflict with python built-in libraries
+      filterer: 
+        - new_filterer.SqlServerFilterer
+        - new_filterer.DevFilterer
 
 # Define notification jobs    
 jobs:
