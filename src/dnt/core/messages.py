@@ -87,7 +87,19 @@ class MsgGrp:
     """
     A message group class to dispatch messages to the destinations assigned in the group.
     """
-    def __init__(self, name, config: List, formatter_dic: Dict, filterer_dic: Dict) -> None:
+    def __init__(self, name: str, config: List, formatter_dic: Dict, filterer_dic: Dict) -> None:
+        """
+        Initilize the function with the message group's name, config, and formatter/filterer settings.
+
+        Args:
+            name (str): The name of the message group
+            config (List): A list of message receiver settings
+            formatter_dic (dict): The formatter settings on message group level
+            filterer_dic (dict): The filterer settings on message group level
+
+        Returns:
+            None
+        """
         self.name = name
         self.config = config
         self.formatter_dic = formatter_dic
