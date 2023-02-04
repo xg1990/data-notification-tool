@@ -1,6 +1,7 @@
 from typing import Dict, List, Union, Generator
 
 
+# Notification level defination
 CRITICAL = 50
 ERROR = 40
 WARNING = 30
@@ -8,6 +9,7 @@ INFO = 20
 DEBUG = 10
 NOTSET = 0
 
+# Level <-> name (str) mapping
 _lvl_to_name = {
     CRITICAL: "CRITICAL",
     ERROR: "ERROR",
@@ -25,6 +27,7 @@ _name_to_lvl = {
     "DEBUG": DEBUG,
     "NOTSET": NOTSET,
 }
+
 
 def lvl_to_num(level: Union[float, int, str]) -> Union[float, int]:
     """

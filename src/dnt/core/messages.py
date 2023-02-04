@@ -1,13 +1,29 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Tuple, Optional
 import numpy as np
 from dnt.core.utils import (
     NOTSET,
     lvl_to_num
 )
+from dnt.core.base import (
+    BaseFormatter,
+    BaseFilterer
+)
 
 
 class Message:
+    """
+    A class to store a message with extra information (e.g. notification level).
+    """
     def __init__(self, msg: Dict):
+        """
+        Initialize the message with a dict.
+
+        Args:
+            msg (dict): The content of the message in a dict
+
+        Returns:
+            None
+        """
         self.level = msg.get("level", NOTSET)
         self.lvl_no = lvl_to_num(self.level)
         self.message = msg
@@ -17,6 +33,17 @@ class MsgRcv:
     A message receiver class to dispatch messages to each destination of a specific message group.
     """
     def __init__(self, config: Dict, formatter_dic: Dict, filterer_dic: Dict) -> None:
+        """
+        Initialize the message receiver with a config, and formatter/filterer settings.
+
+        Args:
+            config (dict): The config of the message receiver
+            formatter_dic (dict): A dict of formatter settings
+            filterer_dic (dict): A dict of filterer settings
+
+        Returns:
+            None
+        """
         self.config = config
         self.dest = self.config.get("dest")
         self.level = self.config.get("level", "NOTSET")
@@ -27,7 +54,18 @@ class MsgRcv:
         self.formatter = self.config.get("formatter") # 1 formatter
         self.formatter, self.filterer = self._load_styler()
 
-    def _load_styler(self):
+    def _load_styler(self) -> Tuple[BaseFormatter, List[BaseFilterer]]:
+        """
+        Load formatter and filterer according to related settings.
+        (There can only be 1 formatter, but multiple filterers)
+
+        Args:
+            None
+        
+        Returns:
+            formatter (BaseFormatter): The formatter loaded
+            filterer (list): A list of filterers loaded
+        """
         formatter = None
         filterer = None
         formatter_name = self.config.get("formatter") # 1 formatter
@@ -43,7 +81,13 @@ class MsgRcv:
 
     def _filter_msg(self, msg_ls: List[Message]) -> List:
         """
-        Filter messages according to specific rules.
+        Filter messages according to notification level and specific rules defined by filterer(s). 
+
+        Args:
+            msg_ls (list): A list of Message objects
+
+        Returns:
+            res_ls (list): The filtered list of Message objects
         """
         if self.filterer is not None:
             filterer_ls = self.filterer if isinstance(self.filterer, list) else [self.filterer]
@@ -62,6 +106,12 @@ class MsgRcv:
     def _format_msg(self, msg_ls: List[Message]) -> List:
         """
         Render the messages in a specific format, if no formatter assigned, will pass it to Destination for formatting.
+        
+        Args:
+            msg_ls (list): A list of Message objects
+
+        Returns:
+            The formatted list of messages, or list of raw messages (if no formatter assigned)
         """
         if self.formatter is not None:
             res_ls = [self.formatter.format(msg) for msg in msg_ls]
@@ -72,6 +122,13 @@ class MsgRcv:
     def deliver_msg(self, msg_ls: List[Message], subject: Optional[str]=None):      
         """
         Deliver messages to a Destination in a dict manner.
+        
+        Args:
+            msg_ls (list): A list of messages to be sent
+            subject (str, optional): The subject of the message
+
+        Returns:
+            A dict to be deliverred to the destination
         """
         msg_ls = self._filter_msg(msg_ls)
         res_ls = self._format_msg(msg_ls)
@@ -107,7 +164,14 @@ class MsgGrp:
         
     def deliver_msg(self, msg_ls: List[Message], subject: Optional[str]=None):
         """
-        Delivery messages to all the destinations in the group.
+        Generate the messages to be deliverred to all the destinations in the group.
+
+        Args:
+            msg_ls (list): A list of messages to be sent
+            subject (str, optional): The subject of the message
+
+        Returns:
+            A list of dict (with destination, subject and messages) to be deliverred
         """
         res_ls = []
         for cfg in self.config:
