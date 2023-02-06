@@ -6,12 +6,30 @@ from dnt.core.config import Config
 
 class Runner:
     """
-    The runner to orchestrate the whole process.
+    A runner class to orchestrate the whole process.
     """
     def __init__(self, config: Config) -> None:
+        """
+        Initialize the runner with a config object.
+
+        Args:
+            config (Config): The config of the runner
+
+        Returns:
+            None
+        """
         self.config: Config = config
 
-    def run_single_job(self, job_name: Optional[str]=None) -> None:
+    def run_single_job(self, job_name: str) -> None:
+        """
+        Run a specific job according to the given name.
+
+        Args:
+            job_name (str): The name of the job to be run
+
+        Returns:
+            None
+        """
         if job_name not in self.config.jobs:
             raise ValueError(f"The job `{job_name}` is not found")
         job_config = self.config.jobs[job_name]
@@ -53,9 +71,15 @@ class Runner:
             else:
                 raise ValueError(f"The destination `{msg_grp_nm}` is not found, should either be a destination or a message group")
 
-    def run_all(self, jobs: List):
+    def run_all(self, jobs: List) -> None:
         """
-        Run all jobs.
+        Run a list of jobs.
+
+        Args:
+            jobs (list): A list of job names to be run
+
+        Returns:
+            None
         """
         if jobs == []:
             for job_name in self.config.jobs:

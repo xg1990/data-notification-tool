@@ -11,6 +11,7 @@ from dnt.core.utils import dict_drop_key, get_components
 import pydoc
 
 
+# The services and related base classes
 SERVICE_TYPE_DIC = {
     "source": BaseSource,
     "destination": BaseDestination,
@@ -18,7 +19,20 @@ SERVICE_TYPE_DIC = {
     "filterer": BaseFilterer,
 }
 
+
 def build_service(service_config: Dict, service_name: str, service_type: str):
+    """
+    Load a service class by name and type and generate an instance.
+
+    Args:
+        service_config (dict): The config of the service
+        service_name (str): The name of the service
+        service_type (str): The type of the service (should be one 'source', 'destination', 
+        'formatter', 'filterer')
+
+    Returns:
+        An instance of the service
+    """
     class_name = service_config.get("class_name", service_name)
 
     try:
@@ -38,7 +52,19 @@ def build_service(service_config: Dict, service_name: str, service_type: str):
         return _cls()
 
 class Config:
+    """
+    A class to load the config file and store the configs for different services.
+    """
     def __init__(self, filename: str) -> None:
+        """
+        Initialize with a config file path.
+
+        Args:
+            filename (str): The path of the config file
+
+        Returns:
+            None
+        """
         self._config = EnvYAML(filename, strict=False)
         self.sources: Dict[str, BaseSource] = {}
         self.destinations: Dict[str, BaseDestination] = {}
@@ -50,6 +76,15 @@ class Config:
         self._set_up_services()
 
     def _set_up_services(self) -> None:
+        """
+        Load services (including sources, destinations, formatters & filterers) according to the config file.
+
+        Args:
+            None
+        
+        Returns:
+            None
+        """
         if "custom_modules" in self._config:
             for _path in self._config["custom_modules"]:
                 sys.path.append(_path)    
@@ -61,7 +96,7 @@ class Config:
         for dest_name, dest_config in self._config["destinations"].items():
             self.destinations[dest_name] = build_service(dest_config, dest_name, service_type="destination")
 
-        # Load filterers & formatters
+        # Load formatters & filterers
         raw_cfg = self._config.export()
         fmt_ls = get_components(raw_cfg, "formatter")
         
@@ -72,18 +107,16 @@ class Config:
         for flt in flt_ls:
             self.filterers[flt] = build_service({}, flt, "filterer")
 
-    def get_services_from_group(
-        self, 
-        group_name: str, 
-        **kwargs
-    ) -> List[Tuple[BaseDestination, Dict]]:
-        group: List[Any] = self._config["message_groups"][group_name]
-        return [
-            (self.destinations[item["dest"]], dict_drop_key(item, "service"))
-            for item in group
-        ]
-
     def validate(self) -> bool:
+        """
+        Validate the config file (if mandatory keys exist).
+
+        Args:
+            None
+
+        Returns:
+            True if the config file is valid
+        """
         assert "sources" in self._config
         assert "destinations" in self._config
         assert "message_groups" in self._config
