@@ -106,7 +106,7 @@ class BaseDestination(ABC):
 
         Args:
             msg_ls (list): A list of messages to be sent
-            subject (str, optional): The subject of the message
+            subject (str, optional): The subject of the message, None by default
 
         Returns:
             None
@@ -119,7 +119,7 @@ class BaseDestination(ABC):
 
         Args:
             msg_ls (list): A list of messages to be sent
-            subject (str, optional): The subject of the message
+            subject (str, optional): The subject of the message, None by default
         
         Returns:
             None

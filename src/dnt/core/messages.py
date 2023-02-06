@@ -125,7 +125,7 @@ class MsgRcv:
         
         Args:
             msg_ls (list): A list of messages to be sent
-            subject (str, optional): The subject of the message
+            subject (str, optional): The subject of the message, None by default
 
         Returns:
             A dict to be deliverred to the destination
@@ -168,7 +168,7 @@ class MsgGrp:
 
         Args:
             msg_ls (list): A list of messages to be sent
-            subject (str, optional): The subject of the message
+            subject (str, optional): The subject of the message, None by default
 
         Returns:
             A list of dict (with destination, subject and messages) to be deliverred
