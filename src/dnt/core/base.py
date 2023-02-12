@@ -1,8 +1,29 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Optional
 import numpy as np
-from dnt.core.utils import lvl_to_num
-from dnt.core.messages import Message
+from dnt.core.utils import lvl_to_num, NOTSET
+
+
+class Message:
+    """
+    A class to store a message with extra information (e.g. notification level).
+    """
+    def __init__(self, msg: Dict):
+        """
+        Initialize the message with a dict.
+
+        Args:
+            msg (dict): The content of the message in a dict
+
+        Returns:
+            None
+        """
+        self.level = msg.get("level", NOTSET)
+        self.lvl_no = lvl_to_num(self.level)
+        self.message = msg
+
+    def __eq__(self, other):
+        return (self.lvl_no == other.lvl_no and self.message == other.message)
 
 
 class BaseSource(ABC):

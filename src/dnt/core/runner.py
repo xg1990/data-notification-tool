@@ -1,7 +1,7 @@
 from typing import List, Optional
 from dnt.core.utils import dict_drop_key
-from dnt.core.base import BaseSource, BaseDestination
-from dnt.core.messages import Message, MsgGrp
+from dnt.core.base import BaseSource, BaseDestination, Message
+from dnt.core.messages import MsgGrp
 from dnt.core.config import Config
 
 class Runner:

@@ -6,27 +6,10 @@ from dnt.core.utils import (
 )
 from dnt.core.base import (
     BaseFormatter,
-    BaseFilterer
+    BaseFilterer,
+    Message
 )
 
-
-class Message:
-    """
-    A class to store a message with extra information (e.g. notification level).
-    """
-    def __init__(self, msg: Dict):
-        """
-        Initialize the message with a dict.
-
-        Args:
-            msg (dict): The content of the message in a dict
-
-        Returns:
-            None
-        """
-        self.level = msg.get("level", NOTSET)
-        self.lvl_no = lvl_to_num(self.level)
-        self.message = msg
 
 class MsgRcv:
     """
