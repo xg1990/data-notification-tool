@@ -17,6 +17,7 @@ def test_sqlsource():
             'DEBUG' AS level
         """
     )
+    assert ss.name == service_name 
     assert isinstance(msg, list)
     assert msg[0] == Message(
         {
