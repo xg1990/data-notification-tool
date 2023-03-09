@@ -1,8 +1,8 @@
 # Define the sources to get message data from
 sources:
-  postgres:
+  sqlite_in_memory:
     class_name: SQLSource
-    url: postgresql+psycopg2://test_user:123456@localhost/test
+    url: 'sqlite:///:memory:'
 
 # Define the destinations to receive the messages
 destinations:
@@ -19,8 +19,8 @@ message_groups:
   dummy_error_group:
     - dest: console
       level: ERROR
-      # filterer: 
-      #   - filterer.Aff
+      filterer: 
+        - new_filterer.DevFilterer
       #   - filterer.Bff
 
 # Define notification jobs    
@@ -57,5 +57,4 @@ jobs:
       - console
 
 custom_modules:
-  # - F:\datamining\data-notification-tool\src\modules\
-  - ./tests/another_dummy_project/modules
+  - ./another_dummy_project/modules # the relative path to this file
