@@ -1,3 +1,4 @@
+import os
 import sys
 from envyaml import EnvYAML
 from typing import Any, Dict, List, Tuple, Type
@@ -65,6 +66,7 @@ class Config:
         Returns:
             None
         """
+        self._filename = filename
         self._config = EnvYAML(filename, strict=False)
         self.sources: Dict[str, BaseSource] = {}
         self.destinations: Dict[str, BaseDestination] = {}
@@ -87,7 +89,13 @@ class Config:
         """
         if "custom_modules" in self._config:
             for _path in self._config["custom_modules"]:
-                sys.path.append(_path)    
+                abs_path = os.path.abspath(
+                    os.path.join(
+                        os.path.dirname(self._filename),
+                        _path
+                    )
+                )
+                sys.path.append(abs_path)    
 
         # Load sources & destinations
         for source_name, source_config in self._config["sources"].items():

@@ -68,7 +68,9 @@ class SMTPService(BaseDestination):
         email_msg["Subject"] = subject
         body: str = ""
 
-        for msg in msg_ls:
+        send_ls = self._filter_msg(msg_ls)
+        send_ls = self._format_msg(send_ls)
+        for msg in send_ls:
             body += f"- {msg}\n"
 
         email_msg.attach(MIMEText(body, "plain"))

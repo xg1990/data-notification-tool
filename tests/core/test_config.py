@@ -19,7 +19,7 @@ def test_set_up_services():
     fpath = os.path.join(os.path.dirname(__file__), "..", "test_config.yml")
     config = Config(fpath)
     config._set_up_services()
-    assert "sqlite_in_memory" in config.sources
+    assert "sqlite" in config.sources
     assert "console" in config.destinations
     assert "new_formatter.TimeStringFormatter" in config.formatters
     assert "new_filterer.DevFilterer" in config.filterers

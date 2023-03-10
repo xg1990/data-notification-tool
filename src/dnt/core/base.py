@@ -25,6 +25,8 @@ class Message:
     def __eq__(self, other):
         return (self.lvl_no == other.lvl_no and self.message == other.message)
 
+    def items(self):
+        return self.message.items()
 
 class BaseSource(ABC):
     """
@@ -101,7 +103,13 @@ class BaseDestination(ABC):
             msg_ls = [msg for n, msg in enumerate(msg_ls) if keep_flag_ls[n] > 0]
 
         level = lvl_to_num(self.level)
-        res_ls = [msg if isinstance(msg, Message) and msg.lvl_no >= level else msg for msg in msg_ls]
+        res_ls = []
+        for msg in msg_ls:
+            if isinstance(msg, Message):
+                if msg.lvl_no >= level:
+                    res_ls.append(msg)
+            else:
+                res_ls.append(msg)
         return res_ls
 
     def _format_msg(self, msg_ls: List[Message]) -> List:

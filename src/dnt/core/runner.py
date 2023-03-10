@@ -71,17 +71,17 @@ class Runner:
             else:
                 raise ValueError(f"The destination `{msg_grp_nm}` is not found, should either be a destination or a message group")
 
-    def run_all(self, jobs: List) -> None:
+    def run_all(self, jobs: Optional[List]=None) -> None:
         """
         Run a list of jobs.
 
         Args:
-            jobs (list): A list of job names to be run
+            jobs (list): A list of job names to be run, if None, will run all jobs
 
         Returns:
             None
         """
-        if jobs == []:
+        if jobs is None:
             for job_name in self.config.jobs:
                 self.run_single_job(job_name)
         else:            

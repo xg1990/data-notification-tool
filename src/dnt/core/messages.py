@@ -32,9 +32,6 @@ class MsgRcv:
         self.level = self.config.get("level", "NOTSET")
         self.formatter_dic = formatter_dic
         self.filterer_dic = filterer_dic
-
-        self.filterer = self.config.get("filterer") # 1 filterer or a list of filterers
-        self.formatter = self.config.get("formatter") # 1 formatter
         self.formatter, self.filterer = self._load_styler()
 
     def _load_styler(self) -> Tuple[BaseFormatter, List[BaseFilterer]]:

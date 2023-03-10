@@ -1,8 +1,8 @@
 # Define the sources to get message data from
 sources:
-  postgres:
+  sqlite:
     class_name: SQLSource
-    url: postgresql+psycopg2://test_user:123456@localhost/test
+    url: 'sqlite:///test.db'
 
 # Define the destinations to receive the messages
 destinations:
@@ -14,50 +14,48 @@ message_groups:
   dummy_debug_group:
     - dest: console
       level: DEBUG
-      formatter: new_formatter.HumanReadableFormatter
+      formatter: new_formatter.TimeStringFormatter # file name should not conflict with python built-in libraries
 
   dummy_error_group:
     - dest: console
       level: ERROR
-      formatter: new_formatter.TimeStringFormatter # file name should not conflict with python built-in libraries
-      filterer: 
-        - new_filterer.SqlServerFilterer
+      filterer: # there can be multiple filterers
         - new_filterer.DevFilterer
+        - new_filterer.SqlServerFilterer
 
 # Define notification jobs    
 jobs:
   system_status_alert:
     get_messages:
-      - service: postgres
+      - service: sqlite
         query: |
           SELECT 
             *,
             CASE
-                WHEN details = 'SUCCESS'
+                WHEN check_status = 'SUCCESS'
                 THEN 'INFO'
                 ELSE 'ERROR'
             END AS level
-          FROM report.system_status
+          FROM system_status
     send_messages:
       - dummy_debug_group
       - dummy_error_group
 
   test_single_dest:
     get_messages:
-      - service: postgres
+      - service: sqlite
         query: |
           SELECT 
             *,
             CASE
-                WHEN details = 'SUCCESS'
+                WHEN check_status = 'SUCCESS'
                 THEN 'INFO'
                 ELSE 'ERROR'
             END AS level
-          FROM report.system_status
+          FROM system_status
     send_messages:
       - console
 
+# Define external (self-defined) modules
 custom_modules:
-  - F:\datamining\data-notification-tool\src\modules\
-  #- ../modules/
-
+  - ./another_dummy_project/modules # the relative path to this file
