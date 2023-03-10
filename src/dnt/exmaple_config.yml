@@ -19,7 +19,7 @@ message_groups:
   dummy_error_group:
     - dest: console
       level: ERROR
-      filterer: 
+      filterer: # there can be multiple filterers
         - new_filterer.DevFilterer
         - new_filterer.SqlServerFilterer
 
@@ -56,5 +56,6 @@ jobs:
     send_messages:
       - console
 
+# Define external (self-defined) modules
 custom_modules:
   - ./another_dummy_project/modules # the relative path to this file

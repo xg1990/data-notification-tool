@@ -16,11 +16,15 @@ __license__ = "MIT"
 _logger: logging.Logger = logging.getLogger(__name__)
 
 
-def setup_logging(loglevel) -> None:
-    """Setup basic logging
+def setup_logging(loglevel: int) -> None:
+    """
+    Setup basic logging.
 
     Args:
-      loglevel (int): minimum loglevel for emitting messages
+        loglevel (int): minimum loglevel for emitting messages
+    
+    Returns:
+        None
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
     logging.basicConfig(
@@ -45,17 +49,24 @@ def main(ctx, config) -> None:
 @main.command()
 @click.pass_context
 def validate(ctx) -> None:
-    config: Config = ctx.obj
-    click.echo("test command")
-    print("config=", config)
+    """
+    Validate config file.
+    """
+    config: Config = ctx.obj["config"]
+    click.echo("Validating...")
+    print("Config file is good to go:", config.validate())
 
 
 @main.command()
 @click.pass_context
-@click.argument('jobs', nargs=-1)
+@click.argument("jobs", nargs=-1)
 def run(ctx, jobs) -> None:
-    config: Config = ctx.obj['config']
+    """
+    Run jobs.
+    """
+    config: Config = ctx.obj["config"]
     runner: Runner = Runner(config)
+    click.echo("Running jobs...")
     runner.run_all(list(jobs))
 
 

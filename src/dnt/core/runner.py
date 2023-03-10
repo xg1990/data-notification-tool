@@ -1,48 +1,90 @@
 from typing import List, Optional
-
-from dnt.core.config import Config
-from dnt.core.service import DataServiceBase, Messages, MessageServiceBase
 from dnt.core.utils import dict_drop_key
-
+from dnt.core.base import BaseSource, BaseDestination, Message
+from dnt.core.messages import MsgGrp
+from dnt.core.config import Config
 
 class Runner:
+    """
+    A runner class to orchestrate the whole process.
+    """
     def __init__(self, config: Config) -> None:
+        """
+        Initialize the runner with a config object.
+
+        Args:
+            config (Config): The config of the runner
+
+        Returns:
+            None
+        """
         self.config: Config = config
 
-    def run_single_job(self, job_name: Optional[str] = None) -> None:
+    def run_single_job(self, job_name: str) -> None:
+        """
+        Run a specific job according to the given name.
+
+        Args:
+            job_name (str): The name of the job to be run
+
+        Returns:
+            None
+        """
         if job_name not in self.config.jobs:
             raise ValueError(f"The job `{job_name}` is not found")
         job_config = self.config.jobs[job_name]
-        results: List[Messages] = []
-        for _msg_config in job_config["get_messages"]:
-            service_name = _msg_config["service"]
-            if service_name not in self.config.services:
-                raise ValueError(f"The service `{service_name}` is not found")
-            _data_service: DataServiceBase = self.config.services[service_name]  # type: ignore
-            _result: Messages = _data_service.get_messages(
-                subject=job_name,
-                **dict_drop_key(_msg_config, "service")
+        
+        # Get messages
+        results: List[Message] = []
+        for _src_config in job_config["get_messages"]:
+            source_name = _src_config["service"]
+            if source_name not in self.config.sources:
+                raise ValueError(f"The source `{source_name}` is not found")
+            _data_service: BaseSource = self.config.sources[source_name]
+            _result: List[Message] = _data_service.get_messages(
+                **dict_drop_key(_src_config, "service")
             )
-            results.append(_result)
-        for action_item in job_config["actions"]:
-            if "group" in action_item:
-                # executing an action group
-                for _msg_service, kwargs in self.config.get_services_from_group(  # type: ignore
-                    action_item["group"]
-                ):
-                    kwargs = kwargs | dict_drop_key(action_item, "group")
-                    _msg_service.send_messages(results, **kwargs)
-            elif "service" in action_item:
-                # executing an single action
-                _msg_service: MessageServiceBase = self.config.services[action_item["service"]]  # type: ignore
-                _msg_service.send_messages(
-                    results, **dict_drop_key(action_item, "service")
-                )
+            results.extend(_result)
 
-    def run_all(self, jobs: List):
-        if jobs == []:
+        # Send messages
+        subject = job_name
+        for msg_grp_nm in job_config["send_messages"]:
+            if msg_grp_nm in self.config.message_groups:
+                # send to a group
+                msg_grp_cfg = self.config.message_groups[msg_grp_nm]
+                msg_grp = MsgGrp(msg_grp_nm, msg_grp_cfg, self.config.formatters, self.config.filterers)
+                delivery: List = msg_grp.deliver_msg(results, subject)
+                
+                for (dest_name, msg) in delivery:
+                    if dest_name not in self.config.destinations:
+                        raise ValueError(f"The destination `{dest_name}` is not found")
+                    _dest_service: BaseDestination = self.config.destinations[dest_name]
+                    _dest_service.emit(msg["messages"], msg["subject"])
+                        
+            elif msg_grp_nm in self.config.destinations:
+                # send to a single destination
+                if msg_grp_nm not in self.config.destinations:
+                    raise ValueError(f"The destination `{msg_grp_nm}` is not found")
+                _dest_service: BaseDestination = self.config.destinations[msg_grp_nm]
+                _dest_service.emit(results, subject)
+
+            else:
+                raise ValueError(f"The destination `{msg_grp_nm}` is not found, should either be a destination or a message group")
+
+    def run_all(self, jobs: Optional[List]=None) -> None:
+        """
+        Run a list of jobs.
+
+        Args:
+            jobs (list): A list of job names to be run, if None, will run all jobs
+
+        Returns:
+            None
+        """
+        if jobs is None:
             for job_name in self.config.jobs:
                 self.run_single_job(job_name)
         else:            
             for job_name in jobs:
                 self.run_single_job(job_name)
+                
