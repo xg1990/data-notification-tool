@@ -112,12 +112,14 @@ class MsgRcv:
         """
         msg_ls = self._filter_msg(msg_ls)
         res_ls = self._format_msg(msg_ls)
+        kwargs = {
+            "subject": subject, 
+            "msg_ls": res_ls
+        }
+        kwargs.update(self.config)
         return (
             self.dest, 
-            {
-                "subject": subject, 
-                "messages": res_ls
-            }
+            kwargs
         )
 
 class MsgGrp:

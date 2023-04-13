@@ -155,7 +155,7 @@ class BaseDestination(ABC):
         """
         msg_ls = self._filter_msg(msg_ls)
         res_ls = self._format_msg(msg_ls)
-        self.send_messages(res_ls, subject, **kwargs)
+        self.send_messages(msg_ls=res_ls, subject=subject, **kwargs)
 
 
 class BaseFormatter(ABC):
