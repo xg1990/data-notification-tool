@@ -67,6 +67,8 @@ def run(ctx, jobs) -> None:
     config: Config = ctx.obj["config"]
     runner: Runner = Runner(config)
     click.echo("Running jobs...")
+
+    job_ls = None if len(jobs) == 0 else list(jobs)
     runner.run_all(list(jobs))
 
 
