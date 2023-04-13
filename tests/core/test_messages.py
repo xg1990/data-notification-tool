@@ -92,8 +92,8 @@ def test_msg_rcv(config, formatter_dic, filterer_dic, expected_formatter, expect
     assert dest == rcv.dest
     assert isinstance(delivered_msg, dict)
     assert delivered_msg["subject"] == "test_test"
-    assert isinstance(delivered_msg["messages"], list)
-    assert len(delivered_msg["messages"]) == expected_n_msg
+    assert isinstance(delivered_msg["msg_ls"], list)
+    assert len(delivered_msg["msg_ls"]) == expected_n_msg
 
 
 @pytest.mark.parametrize(
@@ -144,5 +144,5 @@ def test_msg_grp(name, config, formatter_dic, filterer_dic, expected_n_msg):
         assert isinstance(i, tuple)
         assert isinstance(i[0], str) # dest
         assert isinstance(i[1], dict) # delivered_msg
-        assert isinstance(i[1]["messages"], list)
-        assert len(i[1]["messages"]) == expected_n_msg[n]
+        assert isinstance(i[1]["msg_ls"], list)
+        assert len(i[1]["msg_ls"]) == expected_n_msg[n]

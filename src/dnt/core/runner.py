@@ -55,18 +55,18 @@ class Runner:
                 msg_grp = MsgGrp(msg_grp_nm, msg_grp_cfg, self.config.formatters, self.config.filterers)
                 delivery: List = msg_grp.deliver_msg(results, subject)
                 
-                for (dest_name, msg) in delivery:
+                for (dest_name, kwargs) in delivery:
                     if dest_name not in self.config.destinations:
                         raise ValueError(f"The destination `{dest_name}` is not found")
                     _dest_service: BaseDestination = self.config.destinations[dest_name]
-                    _dest_service.emit(msg["messages"], msg["subject"])
+                    _dest_service.emit(**kwargs)
                         
             elif msg_grp_nm in self.config.destinations:
                 # send to a single destination
                 if msg_grp_nm not in self.config.destinations:
                     raise ValueError(f"The destination `{msg_grp_nm}` is not found")
                 _dest_service: BaseDestination = self.config.destinations[msg_grp_nm]
-                _dest_service.emit(results, subject)
+                _dest_service.emit(msg_ls=results, subject=subject)
 
             else:
                 raise ValueError(f"The destination `{msg_grp_nm}` is not found, should either be a destination or a message group")
