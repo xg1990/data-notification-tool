@@ -65,8 +65,9 @@ class Runner:
                 # send to a single destination
                 if msg_grp_nm not in self.config.destinations:
                     raise ValueError(f"The destination `{msg_grp_nm}` is not found")
+                kwargs = {"msg_ls": results, "subject": subject}
                 _dest_service: BaseDestination = self.config.destinations[msg_grp_nm]
-                _dest_service.emit(msg_ls=results, subject=subject)
+                _dest_service.emit(**kwargs)
 
             else:
                 raise ValueError(f"The destination `{msg_grp_nm}` is not found, should either be a destination or a message group")
