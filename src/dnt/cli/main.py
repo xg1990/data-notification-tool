@@ -69,7 +69,7 @@ def run(ctx, jobs) -> None:
     click.echo("Running jobs...")
 
     job_ls = None if len(jobs) == 0 else list(jobs)
-    runner.run_all(list(jobs))
+    runner.run_all(job_ls)
 
 
 if __name__ == "__main__":
