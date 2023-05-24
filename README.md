@@ -18,7 +18,16 @@
 
 A longer description of your project goes here...
 
+## Collaborators
 
+<!-- readme: collaborators -start -->
+<!-- readme: collaborators -end -->
+
+
+## Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
 <!-- pyscaffold-notes -->
 
 ## Note
