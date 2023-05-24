@@ -21,12 +21,39 @@ A longer description of your project goes here...
 ## Collaborators
 
 <!-- readme: collaborators -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/xg1990">
+            <img src="https://avatars.githubusercontent.com/u/1443518?v=4" width="100;" alt="xg1990"/>
+            <br />
+            <sub><b>Xg1990</b></sub>
+        </a>
+    </td></tr>
+</table>
 <!-- readme: collaborators -end -->
 
 
 ## Contributors
 
 <!-- readme: contributors -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/SilenceGTX">
+            <img src="https://avatars.githubusercontent.com/u/20066708?v=4" width="100;" alt="SilenceGTX"/>
+            <br />
+            <sub><b>Null</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/xg1990">
+            <img src="https://avatars.githubusercontent.com/u/1443518?v=4" width="100;" alt="xg1990"/>
+            <br />
+            <sub><b>Xg1990</b></sub>
+        </a>
+    </td></tr>
+</table>
 <!-- readme: contributors -end -->
 <!-- pyscaffold-notes -->
 
